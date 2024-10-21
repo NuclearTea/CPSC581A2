@@ -26,10 +26,24 @@ function incrementEventCount() {
     // counterElement.innerHTML = eventCount + 1;
 
     // Get the time difference between the first and last event in lastData
+    let timeDifference = 0;
     if (lastData.length > 0) {
-        let timeDifference = lastData[lastData.length - 1].time - lastData[0].time;
+        timeDifference = lastData[lastData.length - 1].time - lastData[0].time;
         document.getElementById("timeDifference").innerHTML = timeDifference;
     }
+
+    // Only keep a 100ms buffer in lastData
+    if (timeDifference > 100) {
+        while (true) {
+            let nextTimeDifference = lastData[lastData.length - 1].time - lastData[1].time;
+            if (nextTimeDifference < 100) {
+                break;
+            }
+            lastData.shift();
+            timeDifference = nextTimeDifference;
+        }
+    }
+    
     lastData.push({
         'acc_gx': document.getElementById('Accelerometer_gx').innerHTML,
         'acc_gy': document.getElementById('Accelerometer_gy').innerHTML,
