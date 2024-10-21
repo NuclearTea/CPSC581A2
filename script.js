@@ -21,13 +21,14 @@ function handleOrientation(event) {
 }
 
 function incrementEventCount() {
-    let counterElement = document.getElementById("num-observed-events")
-    let eventCount = parseInt(counterElement.innerHTML)
-    counterElement.innerHTML = eventCount + 1;
+    // let counterElement = document.getElementById("num-observed-events")
+    // let eventCount = parseInt(counterElement.innerHTML)
+    // counterElement.innerHTML = eventCount + 1;
 
-    // Update the last 10 data points
-    if (lastData.length > 10) {
-        lastData.shift();
+    // Get the time difference between the first and last event in lastData
+    if (lastData.length > 0) {
+        let timeDifference = lastData[lastData.length - 1].time - lastData[0].time;
+        document.getElementById("time-difference").innerHTML = timeDifference;
     }
     lastData.push({
         'acc_gx': document.getElementById('Accelerometer_gx').innerHTML,
@@ -40,6 +41,7 @@ function incrementEventCount() {
         'gyro_z': document.getElementById('Gyroscope_z').innerHTML,
         'gyro_x': document.getElementById('Gyroscope_x').innerHTML,
         'gyro_y': document.getElementById('Gyroscope_y').innerHTML,
+        'time': new Date().getTime()
     });
 
     // Print lastData
