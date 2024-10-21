@@ -29,7 +29,7 @@ function incrementEventCount() {
     let timeDifference = 0;
     if (lastData.length > 0) {
         timeDifference = lastData[lastData.length - 1].time - lastData[0].time;
-        document.getElementById("timeDifference").innerHTML = timeDifference;
+        document.getElementById("TimeDifference").innerHTML = timeDifference;
     }
 
     // Only keep a 100ms buffer in lastData
@@ -43,7 +43,7 @@ function incrementEventCount() {
             timeDifference = nextTimeDifference;
         }
     }
-    
+
     lastData.push({
         'acc_gx': document.getElementById('Accelerometer_gx').innerHTML,
         'acc_gy': document.getElementById('Accelerometer_gy').innerHTML,
