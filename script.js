@@ -28,7 +28,7 @@ function incrementEventCount() {
     // Get the time difference between the first and last event in lastData
     if (lastData.length > 0) {
         let timeDifference = lastData[lastData.length - 1].time - lastData[0].time;
-        document.getElementById("time-difference").innerHTML = timeDifference;
+        document.getElementById("timeDifference").innerHTML = timeDifference;
     }
     lastData.push({
         'acc_gx': document.getElementById('Accelerometer_gx').innerHTML,
