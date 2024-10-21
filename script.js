@@ -5,6 +5,7 @@ console.log("Hello 🌎");
 // console.log(t);
 // t.innerHTML = "Waiting for device motion"
 
+const lastData = [];
 
 function updateFieldIfNotNull(fieldName, value, precision = 10) {
     if (value != null)
@@ -23,6 +24,26 @@ function incrementEventCount() {
     let counterElement = document.getElementById("num-observed-events")
     let eventCount = parseInt(counterElement.innerHTML)
     counterElement.innerHTML = eventCount + 1;
+
+    // Update the last 10 data points
+    if (lastData.length > 10) {
+        lastData.shift();
+    }
+    lastData.push({
+        'acc_gx': document.getElementById('Accelerometer_gx').innerHTML,
+        'acc_gy': document.getElementById('Accelerometer_gy').innerHTML,
+        'acc_gz': document.getElementById('Accelerometer_gz').innerHTML,
+        'acc_x': document.getElementById('Accelerometer_x').innerHTML,
+        'acc_y': document.getElementById('Accelerometer_y').innerHTML,
+        'acc_z': document.getElementById('Accelerometer_z').innerHTML,
+        'acc_i': document.getElementById('Accelerometer_i').innerHTML,
+        'gyro_z': document.getElementById('Gyroscope_z').innerHTML,
+        'gyro_x': document.getElementById('Gyroscope_x').innerHTML,
+        'gyro_y': document.getElementById('Gyroscope_y').innerHTML,
+    });
+
+    // Print lastData
+    console.log(lastData);
 }
 
 
