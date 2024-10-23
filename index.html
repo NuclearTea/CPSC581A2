@@ -10,10 +10,11 @@
 
 <body>
 
-
-
     <div class="content" role="main">
-        <!--       <h1 id="text" class="title">A Button</h1> -->
+
+
+        <!-- Optional Button to manually request permission (for iOS 13+) -->
+        <button id="startButton">Click to Enable Motion/Orientation</button>
 
         <h2 style="margin-top:0.75rem;">Orientation</h2>
         <ul>
@@ -31,7 +32,6 @@
         </ul>
 
         <h2>Accelerometer including gravity</h2>
-
         <ul>
             <li>X-axis: <span id="Accelerometer_gx">0</span><span> m/s<sup>2</sup></span></li>
             <li>Y-axis: <span id="Accelerometer_gy">0</span><span> m/s<sup>2</sup></span></li>
@@ -59,6 +59,15 @@
             <li>Shake Counter: <span id="ShakeCounter">0</span></li>
         </ul>
     </div>
+
+    <script>
+        // Optional: Add a listener to the button to trigger the permission request manually
+        document.getElementById('startButton').addEventListener('click', function() {
+            requestPermission(); // This will invoke the function in your JavaScript to request permissions
+        });
+    </script>
+
 </body>
 
 </html>
+
