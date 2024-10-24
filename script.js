@@ -160,6 +160,13 @@ function detectBopEventEnd() {
     if (!isRecording) return;
 
     let now = new Date().getTime();
+    // for (i = recordingData.length - 1; i >= 0; i--) {
+    //     if (detectBopGenericAction(recordingData[i])) {
+    //         return;
+    //     } if (now - recordingData[i].time > 100) {
+    //         break;
+    //     }
+    // }
     if (now - startRecordingTime < 1000) {
         return;
     }
