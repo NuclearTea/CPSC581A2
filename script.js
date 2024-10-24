@@ -19,8 +19,7 @@ let recordingData = [];
 let isRecording = false;
 let startRecordingTime = 0;
 
-// const correctPassword = [ACTION_BOP, ACTION_PULL, ACTION_TWIST, ACTION_SHAKE];
-const correctPassword = [ACTION_PULL, ACTION_TWIST, ACTION_SHAKE];
+const correctPassword = [ACTION_BOP, ACTION_PULL, ACTION_TWIST, ACTION_SHAKE];
 let guessPassword = [];
 
 let acc_gx = 0.0;
@@ -52,6 +51,12 @@ function detectBopGenericAction(dataPoint) {
     if (dataPoint.acc_x > ACCEL_THRESHOLD || dataPoint.acc_y > ACCEL_THRESHOLD || dataPoint.acc_z > ACCEL_THRESHOLD) {
         return true;
     }
+}
+
+function detectBopButton() {
+    guessPassword.push(ACTION_BOP);
+    document.getElementById("LastAction").innerHTML = ACTION_BOP;
+    checkPassword();
 }
 
 function detectBopPull(dataPoint) {
@@ -113,6 +118,21 @@ function readRecordedData() {
     }
     
     return ACTION_NONE;
+}
+
+function checkPassword() {
+    // Check if the password is correct
+    let isCorrect = true;
+    for (let i = 0; i < guessPassword.length; i++) {
+        if (guessPassword[i] != correctPassword[i]) {
+            isCorrect = false;
+            guessPassword = [];
+            break;
+        }
+    }
+    if (isCorrect && guessPassword.length == correctPassword.length) {
+        document.getElementById("LastAction").innerHTML = "Correct Password!";
+    }
 }
 
 function detectBopEventStart() {
