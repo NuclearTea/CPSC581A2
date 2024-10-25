@@ -18,6 +18,10 @@ let recordingData = [];
 let isRecording = false;
 let startRecordingTime = 0;
 
+// const correctPassword = [ACTION_BOP, ACTION_PULL, ACTION_TWIST, ACTION_SHAKE];
+const correctPassword = [ACTION_PULL, ACTION_TWIST, ACTION_SHAKE];
+let guessPassword = [];
+
 let acc_gx = 0.0;
 let acc_gy = 0.0;
 let acc_gz = 0.0;
@@ -182,6 +186,20 @@ function detectBopEventEnd() {
 
     // Record the action
     document.getElementById("LastAction").innerHTML = action;
+    guessPassword.push(action);
+
+    // Check if the password is correct
+    let isCorrect = true;
+    for (let i = 0; i < guessPassword.length; i++) {
+        if (guessPassword[i] != correctPassword[i]) {
+            isCorrect = false;
+            guessPassword = [];
+            break;
+        }
+    }
+    if (isCorrect && guessPassword.length == correctPassword.length) {
+        document.getElementById("LastAction").innerHTML = "Correct Password!";
+    }
 }
 
 function updateBuffer() {
