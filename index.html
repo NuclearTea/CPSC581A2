@@ -4,68 +4,30 @@
 <head>
     <title>581 button demo</title>
     <link rel="icon" href="https://glitch.com/favicon.ico" />
-    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="styles/index.css" />
     <script src="/script.js" defer></script>
+    <script src="/page.js" defer></script>
 </head>
 
 <body>
 
     <div class="content" role="main">
-        
-        <button id="startButton">Allow Permission</button>
 
-        <h2 style="margin-top:0.75rem;">Orientation</h2>
-        <ul>
-            <li>X-axis (β): <span id="Orientation_b">0</span><span>°</span></li>
-            <li>Y-axis (γ): <span id="Orientation_g">0</span><span>°</span></li>
-            <li>Z-axis (α): <span id="Orientation_a">0</span><span>°</span></li>
-        </ul>
-
-        <h2>Accelerometer</h2>
-        <ul>
-            <li>X-axis: <span id="Accelerometer_x">0</span><span> m/s<sup>2</sup></span></li>
-            <li>Y-axis: <span id="Accelerometer_y">0</span><span> m/s<sup>2</sup></span></li>
-            <li>Z-axis: <span id="Accelerometer_z">0</span><span> m/s<sup>2</sup></span></li>
-            <li>Data Interval: <span id="Accelerometer_i">0</span><span> ms</span></li>
-        </ul>
-
-        <h2>Accelerometer including gravity</h2>
-        <ul>
-            <li>X-axis: <span id="Accelerometer_gx">0</span><span> m/s<sup>2</sup></span></li>
-            <li>Y-axis: <span id="Accelerometer_gy">0</span><span> m/s<sup>2</sup></span></li>
-            <li>Z-axis: <span id="Accelerometer_gz">0</span><span> m/s<sup>2</sup></span></li>
-        </ul>
-
-        <h2>Gyroscope</h2>
-        <ul>
-            <li>X-axis: <span id="Gyroscope_x">0</span><span>°/s</span></li>
-            <li>Y-axis: <span id="Gyroscope_y">0</span><span>°/s</span></li>
-            <li>Z-axis: <span id="Gyroscope_z">0</span><span>°/s</span></li>
-        </ul>
-
-        <h2>Time Difference</h2>
-        <ul>
-            <li>Time Difference: <span id="TimeDifference">0</span><span> ms</span></li>
-        </ul>
-
-        <h2>Last Action</h2>
-        <ul>
-            <li>Recording: <span id="Recording">No</span></li>
-            <li>Last Action: <span id="LastAction">No Action</span></li>
-            <li>Twist Counter: <span id="TwistCounter">0</span></li>
-            <li>Pull Counter: <span id="PullCounter">0</span></li>
-            <li>Shake Counter: <span id="ShakeCounter">0</span></li>
-        </ul>
+        <div class="lockscreen">
+            <div class="time" id="time"></div>
+            <div class="date" id="date"></div>
+            <div id="swipe" class="swipe">Swipe up to unlock</div>
+            <button type="button" id="Bop-It" class="Bop-It">Bop-It</button>
+        </div>
     </div>
 
-    <script>
+    <!-- <script>
         // Optional: Add a listener to the button to trigger the permission request manually
-        document.getElementById('startButton').addEventListener('click', function() {
+        document.getElementById('startButton').addEventListener('click', function () {
             requestPermission(); // This will invoke the function in your JavaScript to request permissions
         });
-    </script>
+    </script> -->
 
 </body>
 
 </html>
-
