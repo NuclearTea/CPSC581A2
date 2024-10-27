@@ -12,7 +12,8 @@ const ACTION_TWIST = "Twist";
 const ACTION_SHAKE = "Shake";
 
 const RECORDING_TIME = 100; // 100ms
-const ACCEL_THRESHOLD = 10;
+const GYRO_THRESHOLD = 200.0;
+const ACCEL_THRESHOLD = 10.0;
 
 const lastData = [];
 let recordingData = [];
@@ -50,6 +51,8 @@ function handleOrientation(event) {
 function detectBopGenericAction(dataPoint) {
     if (dataPoint.acc_x > ACCEL_THRESHOLD || dataPoint.acc_y > ACCEL_THRESHOLD || dataPoint.acc_z > ACCEL_THRESHOLD) {
         return true;
+    } else if (dataPoint.gyro_x > GYRO_THRESHOLD || dataPoint.gyro_y > GYRO_THRESHOLD || dataPoint.gyro_z > GYRO_THRESHOLD) {
+        return true;
     }
 }
 
@@ -60,25 +63,45 @@ function detectBopButton() {
 }
 
 function detectBopPull(dataPoint) {
-    // Detect a -Y change in acceleration (Pull)
-    if (dataPoint.acc_y < -5.0) {
-        return true;
+    // Detect a 1-axis change in the accelerometer (Pull)
+    const acc_values = [dataPoint.acc_x, dataPoint.acc_y, dataPoint.acc_z];
+    for (let i = 0; i < acc_values.length; i++) {
+        if (acc_values[i] > ACCEL_THRESHOLD || acc_values[i] < -ACCEL_THRESHOLD) {
+            return true;
+        }
     }
     return false;
 }
 
 function detectBopTwist(dataPoint) {
-    // Detect a -X and +Z or a +X and -Z change in the gyroscope (Twist)
-    if ((dataPoint.gyro_x < -500.0 && dataPoint.gyro_z > 500.0) || (dataPoint.gyro_x > 500.0 && dataPoint.gyro_z < -500.0)) {
-        return true;
+    // Detect a 2-axes change in the gyroscope (Twist)
+    const gyro_values = [dataPoint.gyro_x, dataPoint.gyro_y, dataPoint.gyro_z];
+    for (let i = 0; i < gyro_values.length; i++) {
+        if (gyro_values[i] > GYRO_THRESHOLD || gyro_values[i] < -GYRO_THRESHOLD) {
+            for (let j = 0; j < gyro_values.length; j++) {
+                if (i == j) continue;
+                if (gyro_values[j] > GYRO_THRESHOLD || gyro_values[j] < -GYRO_THRESHOLD) {
+                    return true;
+                }
+            }
+        }
     }
     return false;
 }
 
 function detectBopShake(dataPoint) {
-    // Detect a -Y change in acceleration (Pull)
-    if (dataPoint.acc_y < -1000.0) {
-        return true;
+    // Detect a 1-axis change in the gyroscope ONLY (Shake)
+    const gyro_values = [dataPoint.gyro_x, dataPoint.gyro_y, dataPoint.gyro_z];
+    for (let i = 0; i < gyro_values.length; i++) {
+        if ((gyro_values[i] > GYRO_THRESHOLD || gyro_values[i] < -GYRO_THRESHOLD)) {
+            for (let j = 0; j < gyro_values.length; j++) {
+                if (i == j) continue;
+                if ((gyro_values[j] > GYRO_THRESHOLD || gyro_values[j] < -GYRO_THRESHOLD)) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
     return false;
 }
@@ -107,13 +130,13 @@ function readRecordedData() {
     document.getElementById("PullCounter").innerHTML = pullCounter;
     document.getElementById("ShakeCounter").innerHTML = shakeCounter;
     
-    if (pullCounter > 15) {
+    if (pullCounter > 15 || shakeCounter > 15) {
         return ACTION_SHAKE;
     }
-    if (twistCounter > 1) {
+    if (twistCounter > 5 && twistCounter > pullCounter) {
         return ACTION_TWIST;
     }
-    if (pullCounter > 1) {
+    if (pullCounter > 2 && pullCounter >= twistCounter) {
         return ACTION_PULL;
     }
     
