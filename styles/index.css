@@ -59,15 +59,14 @@ html {
 }
 
 .Bop-It {
-  /* position: absolute; */
   display: none;
-
   background-color: white;
-  /* bottom: 10vh; */
-  top: 10vh;
-  width: 5rem;
-  height: 5rem;
+  position: absolute;
+  bottom: 10vh;
+  width: 10rem;
+  height: 10rem;
+  border-radius: 25%;
+  border: none;
   font-size: 2.5rem;
   font-weight: 300;
-  display: none;
 }

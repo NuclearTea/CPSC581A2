@@ -22,12 +22,29 @@ updateTimeAndDate(); // Initial call
 const swipeElement = document.getElementById("swipe");
 console.log("🚀 ~ swipeElement:", swipeElement);
 
+let startY = 0;
+let endY = 0;
+swipeElement.addEventListener("touchstart", () => {
+  startY = event.touches[0].clientY;
+});
+
 // Listen for a 'swipe' gesture
-swipeElement.addEventListener("click", () => {
+swipeElement.addEventListener("touchend", () => {
+  endY = event.changedTouches[0].clientY;
+
+  // Check if swipe was upwards
+  if (startY - endY > 50) {
+    // Adjust threshold as needed
+    handleSwipe();
+  }
+});
+
+const handleSwipe = () => {
   console.log("Swipe detected!");
-  document.getElementById("swipe").innerHTML = "Unlocked"; // Optional message
+  document.getElementById("swipe").hidden = true;
+  document.getElementById("Bop-It").style.display = "block";
   import("./script.js").then((module) => {
     console.log("🚀 ~ module:", module);
     module.default(); // Call the main code function
   });
-});
+};

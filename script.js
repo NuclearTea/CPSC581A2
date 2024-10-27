@@ -1,9 +1,6 @@
 function startMainCode() {
   console.log("Hello 🌎");
-  document.getElementById("swipe").hidden = true;
   const bopIt = document.getElementById("Bop-It");
-  console.log("🚀 ~ startMainCode ~ bopIt:", bopIt.clientWidth);
-  bopIt.display = "block";
   // let t = document.querySelector("#text");
   // console.log(t);
   // t.innerHTML = "Waiting for device motion"
@@ -22,8 +19,12 @@ function startMainCode() {
   let isRecording = false;
   let startRecordingTime = 0;
 
+  let bopPressed = false;
+
   // const correctPassword = [ACTION_BOP, ACTION_PULL, ACTION_TWIST, ACTION_SHAKE];
-  const correctPassword = [ACTION_PULL, ACTION_TWIST, ACTION_SHAKE];
+  // const correctPassword = [ACTION_PULL, ACTION_TWIST, ACTION_SHAKE, ACTION_BOP];
+  const correctPassword = [ACTION_PULL, ACTION_SHAKE, ACTION_BOP];
+
   let guessPassword = [];
 
   let acc_gx = 0.0;
@@ -39,6 +40,7 @@ function startMainCode() {
 
   // Function to request motion and orientation permissions
   function requestPermission() {
+    console.log("requestinig permissions");
     if (typeof DeviceMotionEvent.requestPermission === "function") {
       DeviceMotionEvent.requestPermission()
         .then((response) => {
@@ -73,14 +75,15 @@ function startMainCode() {
   }
 
   function handleOrientation(event) {
-    // updateFieldIfNotNull("Orientation_a", event.alpha);
-    // updateFieldIfNotNull("Orientation_b", event.beta);
-    // updateFieldIfNotNull("Orientation_g", event.gamma);
+    updateFieldIfNotNull("Orientation_a", event.alpha);
+    updateFieldIfNotNull("Orientation_b", event.beta);
+    updateFieldIfNotNull("Orientation_g", event.gamma);
     // eventLoop();
   }
 
   function detectBopGenericAction(dataPoint) {
     if (
+      bopPressed ||
       dataPoint.acc_x > ACCEL_THRESHOLD ||
       dataPoint.acc_y > ACCEL_THRESHOLD ||
       dataPoint.acc_z > ACCEL_THRESHOLD
@@ -120,6 +123,13 @@ function startMainCode() {
     let twistCounter = 0;
     let pullCounter = 0;
     let shakeCounter = 0;
+
+    if (bopPressed) {
+      console.log("BopPressed if, readRecordedData");
+      bopPressed = false;
+      return ACTION_BOP;
+    }
+
     for (let i = 0; i < recordingData.length; i++) {
       let dataPoint = recordingData[i];
       if (detectBopTwist(dataPoint)) {
@@ -136,9 +146,9 @@ function startMainCode() {
       console.log(recordingData[i]);
     }
 
-    document.getElementById("TwistCounter").innerHTML = twistCounter;
-    document.getElementById("PullCounter").innerHTML = pullCounter;
-    document.getElementById("ShakeCounter").innerHTML = shakeCounter;
+    // document.getElementById("TwistCounter").innerHTML = twistCounter;
+    // document.getElementById("PullCounter").innerHTML = pullCounter;
+    // document.getElementById("ShakeCounter").innerHTML = shakeCounter;
 
     if (pullCounter > 15) {
       return ACTION_SHAKE;
@@ -163,7 +173,7 @@ function startMainCode() {
     if (detectBopGenericAction(dataPoint)) {
       // Start recording
       console.log("Recording started");
-      document.getElementById("Recording").innerHTML = "YES!";
+      // document.getElementById("Recording").innerHTML = "YES!";
       recordingData.push(lastData);
       isRecording = true;
       startRecordingTime = new Date().getTime();
@@ -171,8 +181,9 @@ function startMainCode() {
   }
 
   function detectBopEventEnd() {
+    console.log("here");
     if (!isRecording) return;
-
+    console.log("is recording truue");
     let now = new Date().getTime();
     // for (i = recordingData.length - 1; i >= 0; i--) {
     //     if (detectBopGenericAction(recordingData[i])) {
@@ -187,15 +198,15 @@ function startMainCode() {
 
     // Read the data to figure out what the action was
     let action = readRecordedData();
+    console.log("Action:", action);
+    const lastAction = document.getElementById("LastAction");
+    lastAction.innerHTML = action;
 
     // Stop recording
-    console.log("Recording stopped");
-    document.getElementById("Recording").innerHTML = "No (stopped)";
     recordingData = [];
     isRecording = false;
 
     // Record the action
-    document.getElementById("LastAction").innerHTML = action;
     guessPassword.push(action);
 
     // Check if the password is correct
@@ -208,7 +219,11 @@ function startMainCode() {
       }
     }
     if (isCorrect && guessPassword.length == correctPassword.length) {
-      document.getElementById("LastAction").innerHTML = "Correct Password!";
+      // document.getElementById("LastAction").innerHTML = "Correct Password!";
+      bopIt.style.display = "none";
+      const swipe = document.getElementById("swipe");
+      swipe.textContent = "succeeded";
+      swipe.hidden = false;
     }
   }
 
@@ -217,7 +232,7 @@ function startMainCode() {
     let timeDifference = 0;
     if (lastData.length > 0) {
       timeDifference = lastData[lastData.length - 1].time - lastData[0].time;
-      // document.getElementById("TimeDifference").innerHTML = timeDifference;
+      document.getElementById("TimeDifference").innerHTML = timeDifference;
     }
 
     // Only keep a 100ms buffer in lastData
@@ -259,7 +274,7 @@ function startMainCode() {
     detectBopEventEnd();
 
     // Print lastData
-    console.log(lastData);
+    // console.log(lastData);
   }
 
   function handleMotion(event) {
@@ -274,36 +289,11 @@ function startMainCode() {
     gyro_y = event.rotationRate.gamma;
     gyro_z = event.rotationRate.alpha;
 
-    // updateFieldIfNotNull(
-    //   "Accelerometer_gx",
-    //   event.accelerationIncludingGravity.x
-    // );
-    // updateFieldIfNotNull(
-    //   "Accelerometer_gy",
-    //   event.accelerationIncludingGravity.y
-    // );
-    // updateFieldIfNotNull(
-    //   "Accelerometer_gz",
-    //   event.accelerationIncludingGravity.z
-    // );
-
-    // updateFieldIfNotNull("Accelerometer_x", event.acceleration.x);
-    // updateFieldIfNotNull("Accelerometer_y", event.acceleration.y);
-    // updateFieldIfNotNull("Accelerometer_z", event.acceleration.z);
-
-    // updateFieldIfNotNull("Accelerometer_i", event.interval, 2);
-
-    // updateFieldIfNotNull("Gyroscope_z", event.rotationRate.alpha);
-    // updateFieldIfNotNull("Gyroscope_x", event.rotationRate.beta);
-    // updateFieldIfNotNull("Gyroscope_y", event.rotationRate.gamma);
-
     eventLoop();
   }
 
   // Call permission request on page load (iOS 13+ compatibility)
-  window.addEventListener("load", function () {
-    requestPermission();
-  });
+  requestPermission();
 
   // Event listeners for device motion and orientation (older versions or Android)
   window.addEventListener("deviceorientation", function (event) {
@@ -313,6 +303,10 @@ function startMainCode() {
   window.addEventListener("devicemotion", function (event) {
     handleMotion(event);
   });
+
+  bopIt.onclick = function () {
+    bopPressed = true;
+  };
 }
 
 export default startMainCode;
