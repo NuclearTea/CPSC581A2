@@ -1,0 +1,82 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    background-color: #4a69bd;
+    color: #ffffff;
+}
+
+.lock-screen, .home-screen {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: url("sunset.jpg");
+    background-size: cover;
+    text-align: center;
+    padding: 20px;
+}
+
+.time {
+    font-size: 4rem;
+    font-weight: bold;
+}
+
+.date {
+    font-size: 1.5rem;
+    font-weight: 300;
+    margin-bottom: 20px;
+}
+
+.permission-button {
+    padding: 12px 20px;
+    font-size: 1.2rem;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.swipe-text {
+    font-size: 1.2rem;
+    font-weight: 300;
+    opacity: 0.8;
+    position: absolute;
+    bottom: 20px;
+    text-align: center;
+    width: 100%;
+    cursor: pointer;
+}
+
+.feedback {
+    font-size: 1.2rem;
+    color: #ffffff;
+    margin-top: 10px;
+}
+
+.correct-password {
+    color: #4CAF50;
+}
+
+.home-screen h1 {
+    color: #ffffff;
+    font-size: 2rem;
+}
+
+.hidden {
+    display: none;
+}

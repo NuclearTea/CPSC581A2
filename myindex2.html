@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Lock Screen Demo</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/script2.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+</head>
+<body>
+    <div class="lock-screen" id="lockScreen">
+        <div class="time-date">
+            <div id="time" class="time">00:00 a.m.</div>
+            <div id="date" class="date">Friday, January 1</div>
+        </div>
+        
+        <button id="startButton" class="permission-button">Allow Permission</button>
+        
+        <div id="LastAction" class="feedback">No Action</div>
+    </div>
+
+    <div class="home-screen" id="homeScreen" style="display: none;">
+        <h1>Welcome to the Home Screen</h1>
+    </div>
+
+    <script>
+        document.getElementById('startButton').addEventListener('click', function() {
+            requestPermission();
+        });
+    </script>
+</body>
+</html>
