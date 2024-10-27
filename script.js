@@ -1,4 +1,3 @@
-
 console.log("Hello 🌎");
 
 // let t = document.querySelector("#text");
@@ -33,6 +32,35 @@ let acc_i = 0.0;
 let gyro_z = 0.0;
 let gyro_x = 0.0;
 let gyro_y = 0.0;
+
+
+// Function to request motion and orientation permissions 
+function requestPermission() {
+    if (typeof DeviceMotionEvent.requestPermission === 'function') {
+        
+        DeviceMotionEvent.requestPermission()
+            .then(response => {
+                if (response === 'granted') {
+                    console.log('Motion permission granted.');
+                    window.addEventListener('devicemotion', handleMotion, true);
+                }
+            })
+            .catch(console.error);
+
+        DeviceOrientationEvent.requestPermission()
+            .then(response => {
+                if (response === 'granted') {
+                    console.log('Orientation permission granted.');
+                    window.addEventListener('deviceorientation', handleOrientation, true);
+                }
+            })
+            .catch(console.error);
+    } else {
+        
+        window.addEventListener('devicemotion', handleMotion, true);
+        window.addEventListener('deviceorientation', handleOrientation, true);
+    }
+}
 
 
 function updateFieldIfNotNull(fieldName, value, precision = 2) {
@@ -178,7 +206,6 @@ function detectBopEventStart() {
 function detectBopEventEnd() {
     if (!isRecording) return;
 
-    // Check if we should stop recording
     let now = new Date().getTime();
     // for (i = recordingData.length - 1; i >= 0; i--) {
     //     if (detectBopGenericAction(recordingData[i])) {
@@ -297,41 +324,23 @@ function handleMotion(event) {
     eventLoop();
 }
 
+// Call permission request on page load (iOS 13+ compatibility)
+window.addEventListener('load', function () {
+    requestPermission();
+});
 
-// document.querySelector("#toggle").onclick = function(e){
-//   e.preventDefault();
-
-//   console.log("click")
-
-//   //motion event
-//     DeviceMotionEvent.requestPermission()
-//     .then(response => {
-//       if (response == 'granted') {
-//         window.addEventListener('devicemotion', handleMotion, true);
-//       }
-//     })
-//     .catch(console.error)
-
-
-
-//   //orientation event
-
-//     DeviceOrientationEvent.requestPermission()
-//     .then(response => {
-//       if (response == 'granted') {
-//         window.addEventListener('deviceorientation', handleOrientation, true);
-//       }
-//     })
-//     .catch(console.error)
-
-// }
-
+// Event listeners for device motion and orientation (older versions or Android)
 window.addEventListener('deviceorientation', function (event) {
-    //console.log(event.alpha + ' : ' + event.beta + ' : ' + event.gamma);
     handleOrientation(event);
 });
 
 window.addEventListener('devicemotion', function (event) {
-    //console.log(event.alpha + ' : ' + event.beta + ' : ' + event.gamma);
     handleMotion(event);
 });
+
+
+
+
+
+
+
