@@ -37,7 +37,6 @@ let gyro_y = 0.0;
 // Function to request motion and orientation permissions 
 function requestPermission() {
     if (typeof DeviceMotionEvent.requestPermission === 'function') {
-        
         DeviceMotionEvent.requestPermission()
             .then(response => {
                 if (response === 'granted') {
@@ -55,9 +54,6 @@ function requestPermission() {
                 }
             })
             .catch(console.error);
-    } else {
-        window.addEventListener('devicemotion', handleMotion, true);
-        window.addEventListener('deviceorientation', handleOrientation, true);
     }
 }
 
@@ -326,4 +322,13 @@ function handleMotion(event) {
 // Call permission request on page load (iOS 13+ compatibility)
 window.addEventListener('load', function () {
     requestPermission();
+});
+
+// Event listeners for device motion and orientation (older versions or Android)
+window.addEventListener('deviceorientation', function (event) {
+    handleOrientation(event);
+});
+
+window.addEventListener('devicemotion', function (event) {
+    handleMotion(event);
 });
