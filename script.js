@@ -18,6 +18,10 @@ const lastData = [];
 let recordingData = [];
 let isRecording = false;
 let startRecordingTime = 0;
+let nextSound = ACTION_NONE;
+
+const MAX_ATTEMPTS = 3;
+let attempts = 0;
 
 const correctPassword = [ACTION_BOP, ACTION_PULL, ACTION_TWIST, ACTION_SHAKE];
 let guessPassword = [];
@@ -69,6 +73,25 @@ function handleOrientation(event) {
     updateFieldIfNotNull('Orientation_b', event.beta);
     updateFieldIfNotNull('Orientation_g', event.gamma);
     // eventLoop();
+}
+
+function handleCorrectAttempt(success) {
+    if (success) {
+        document.getElementById("audioSuccess").play();
+        nextSound = ACTION_NONE;
+        return;
+    }
+
+    if (nextSound == ACTION_BOP) {
+        document.getElementById("audioBop").play();
+    } else if (nextSound == ACTION_PULL) {
+        document.getElementById("audioPull").play();
+    } else if (nextSound == ACTION_TWIST) {
+        document.getElementById("audioTwist").play();
+    } else if (nextSound == ACTION_SHAKE) {
+        document.getElementById("audioShake").play();
+    }
+    nextSound = ACTION_NONE;
 }
 
 function detectBopGenericAction(dataPoint) {
@@ -154,19 +177,26 @@ function readRecordedData() {
     document.getElementById("ShakeCounter").innerHTML = shakeCounter;
     
     if (pullCounter > 15 || shakeCounter > 15) {
-        document.getElementById("audioShake").play();
         return ACTION_SHAKE;
     }
     if (twistCounter > 5 && twistCounter > pullCounter) {
-        document.getElementById("audioTwist").play();
         return ACTION_TWIST;
     }
     if (pullCounter > 2 && pullCounter >= twistCounter) {
-        document.getElementById("audioPull").play();
         return ACTION_PULL;
     }
     
     return ACTION_NONE;
+}
+
+function handleFailedAttempt() {
+    if (attempts >= MAX_ATTEMPTS) {
+        document.getElementById("audioLocked").play();
+        attempts = 0;
+    } else {
+        document.getElementById("audioFail").play();
+        attempts++;
+    }
 }
 
 function checkPassword() {
@@ -176,11 +206,17 @@ function checkPassword() {
         if (guessPassword[i] != correctPassword[i]) {
             isCorrect = false;
             guessPassword = [];
+            handleFailedAttempt();
             break;
         }
     }
-    if (isCorrect && guessPassword.length == correctPassword.length) {
-        document.getElementById("LastAction").innerHTML = "Correct Password!";
+    if (isCorrect) {
+        let fullyCorrect = guessPassword.length == correctPassword.length;
+        if (fullyCorrect) {
+            document.getElementById("LastAction").innerHTML = "Correct Password!";
+            guessPassword = [];
+        }
+        handleCorrectAttempt(fullyCorrect);
     }
 }
 
@@ -205,22 +241,13 @@ function detectBopEventEnd() {
     if (!isRecording) return;
 
     let now = new Date().getTime();
-    // for (i = recordingData.length - 1; i >= 0; i--) {
-    //     if (detectBopGenericAction(recordingData[i])) {
-    //         return;
-    //     } if (now - recordingData[i].time > 100) {
-    //         break;
-    //     }
-    // }
     if (now - startRecordingTime < 1000) {
         return;
     }
 
     // Read the data to figure out what the action was
     let action = readRecordedData();
-    if (action == ACTION_NONE) {
-        return;
-    }
+    nextSound = action;
 
     // Stop recording
     console.log("Recording stopped");
@@ -230,20 +257,11 @@ function detectBopEventEnd() {
 
     // Record the action
     document.getElementById("LastAction").innerHTML = action;
+    if (action == ACTION_NONE) return;
     guessPassword.push(action);
 
     // Check if the password is correct
-    let isCorrect = true;
-    for (let i = 0; i < guessPassword.length; i++) {
-        if (guessPassword[i] != correctPassword[i]) {
-            isCorrect = false;
-            guessPassword = [];
-            break;
-        }
-    }
-    if (isCorrect && guessPassword.length == correctPassword.length) {
-        document.getElementById("LastAction").innerHTML = "Correct Password!";
-    }
+    checkPassword();
 }
 
 function updateBuffer() {
@@ -338,3 +356,11 @@ window.addEventListener('deviceorientation', function (event) {
 window.addEventListener('devicemotion', function (event) {
     handleMotion(event);
 });
+
+document.getElementById("audioBop").load();
+document.getElementById("audioPull").load();
+document.getElementById("audioTwist").load();
+document.getElementById("audioShake").load();
+document.getElementById("audioSuccess").load();
+document.getElementById("audioFail").load();
+document.getElementById("audioLocked").load();
