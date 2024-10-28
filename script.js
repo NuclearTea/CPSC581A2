@@ -56,7 +56,6 @@ function requestPermission() {
             })
             .catch(console.error);
     } else {
-        
         window.addEventListener('devicemotion', handleMotion, true);
         window.addEventListener('deviceorientation', handleOrientation, true);
     }
@@ -328,19 +327,3 @@ function handleMotion(event) {
 window.addEventListener('load', function () {
     requestPermission();
 });
-
-// Event listeners for device motion and orientation (older versions or Android)
-window.addEventListener('deviceorientation', function (event) {
-    handleOrientation(event);
-});
-
-window.addEventListener('devicemotion', function (event) {
-    handleMotion(event);
-});
-
-
-
-
-
-
-
