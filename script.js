@@ -154,12 +154,15 @@ function readRecordedData() {
     document.getElementById("ShakeCounter").innerHTML = shakeCounter;
     
     if (pullCounter > 15 || shakeCounter > 15) {
+        document.getElementById("audioShake").play();
         return ACTION_SHAKE;
     }
     if (twistCounter > 5 && twistCounter > pullCounter) {
+        document.getElementById("audioTwist").play();
         return ACTION_TWIST;
     }
     if (pullCounter > 2 && pullCounter >= twistCounter) {
+        document.getElementById("audioPull").play();
         return ACTION_PULL;
     }
     
@@ -215,6 +218,9 @@ function detectBopEventEnd() {
 
     // Read the data to figure out what the action was
     let action = readRecordedData();
+    if (action == ACTION_NONE) {
+        return;
+    }
 
     // Stop recording
     console.log("Recording stopped");
