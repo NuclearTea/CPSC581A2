@@ -105,6 +105,7 @@ function detectBopGenericAction(dataPoint) {
 function detectBopButton() {
     guessPassword.push(ACTION_BOP);
     document.getElementById("LastAction").innerHTML = ACTION_BOP;
+    nextSound = ACTION_BOP;
     checkPassword();
 }
 
